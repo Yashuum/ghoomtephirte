@@ -1,0 +1,24 @@
+{
+  "name": "Ghoomte Phirte - घूमते फिरते",
+  "short_name": "Ghoomte Phirte",
+  "description": "A nostalgic Indian road-trip experience inside a vintage car with favourite Hindi songs and atmospheric sounds.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#1b0f0b",
+  "theme_color": "#2d140f",
+  "orientation": "any",
+  "icons": [
+    {
+      "src": "/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
