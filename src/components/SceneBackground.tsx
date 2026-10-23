@@ -175,7 +175,7 @@ export const SceneBackground: React.FC<SceneBackgroundProps> = ({ scene, mousePo
             className="scene-image-layer day-layer"
             style={{
               ...sharedSceneStyle,
-              backgroundImage: 'url(/images/scene-day.jpg)',
+              backgroundImage: `url(${import.meta.env.BASE_URL}images/scene-day.jpg)`,
               opacity: scene === 'day' ? 1 : 0,
             }}
           />
@@ -185,7 +185,7 @@ export const SceneBackground: React.FC<SceneBackgroundProps> = ({ scene, mousePo
             className="scene-image-layer night-layer"
             style={{
               ...sharedSceneStyle,
-              backgroundImage: 'url(/images/scene-night.jpg)',
+              backgroundImage: `url(${import.meta.env.BASE_URL}images/scene-night.jpg)`,
               opacity: scene === 'night' ? 1 : 0,
             }}
           />
@@ -195,7 +195,7 @@ export const SceneBackground: React.FC<SceneBackgroundProps> = ({ scene, mousePo
             className="scene-image-layer rain-layer"
             style={{
               ...sharedSceneStyle,
-              backgroundImage: 'url(/images/scene-rain.jpg)',
+              backgroundImage: `url(${import.meta.env.BASE_URL}images/scene-rain.jpg)`,
               opacity: scene === 'rain' ? 1 : 0,
             }}
           />
