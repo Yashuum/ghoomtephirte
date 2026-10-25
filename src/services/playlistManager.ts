@@ -1,25 +1,32 @@
 import { SavedPlaylist } from '../types';
 
-export const DEFAULT_PLAYLIST_ID = 'PLEOiStG7CxDKEx0W4AMsDlEDk2qrlns0I';
+export const DEFAULT_PLAYLIST_ID = 'PL8A83416F6D9FEEB0';
 
 const DEFAULT_PLAYLISTS: SavedPlaylist[] = [
   {
-    id: 'default-ghoomte-phirte',
+    id: '90s-bollywood-superhits',
     playlistId: DEFAULT_PLAYLIST_ID,
-    title: 'Ghoomte Phirte — Nostalgic Hindi Classics',
+    title: '90s Bollywood Evergreen Hits (Kumar Sanu, Udit, Alka)',
     isActive: true,
     createdAt: Date.now(),
   },
   {
-    id: 'retro-monsoon-drive',
+    id: '90s-romantic-melodies',
     playlistId: 'PLw-VjHDlEOgs658kAHR9LAa45ET44bdQG',
-    title: 'Monsoon Retro Melodies',
+    title: '90s Romantic Melodies & Rain Drive',
+    isActive: false,
+    createdAt: Date.now() - 50000,
+  },
+  {
+    id: 'golden-era-classics',
+    playlistId: 'PLEOiStG7CxDKEx0W4AMsDlEDk2qrlns0I',
+    title: 'Golden Era 70s & 80s Highway Classics',
     isActive: false,
     createdAt: Date.now() - 100000,
   },
 ];
 
-const LOCAL_STORAGE_KEY = 'ghoomte_phirte_admin_playlists';
+const LOCAL_STORAGE_KEY = 'ghoomte_phirte_admin_playlists_v2';
 const CLOUD_ENDPOINT_KEY = 'ghoomte_phirte_cloud_endpoint';
 const ADMIN_PASSCODE_KEY = 'ghoomte_phirte_admin_passcode';
 const DEFAULT_PASSCODE = 'ghoomte777';

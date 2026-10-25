@@ -1,7 +1,7 @@
 import { PlaybackStatus, TrackMetadata } from '../types';
 import { playlistManager } from '../services/playlistManager';
 
-export const PLAYLIST_ID = 'PLEOiStG7CxDKEx0W4AMsDlEDk2qrlns0I';
+export const PLAYLIST_ID = 'PL8A83416F6D9FEEB0';
 export const PLAYLIST_URL = `https://www.youtube.com/playlist?list=${PLAYLIST_ID}`;
 
 // 1-second silent PCM WAV audio base64 data URI to keep mobile audio session alive
@@ -14,6 +14,7 @@ declare global {
       Player: new (
         elementId: string | HTMLElement,
         options: {
+          host?: string;
           height?: string | number;
           width?: string | number;
           videoId?: string;
@@ -78,8 +79,8 @@ class YouTubePlayerController {
   private containerId = 'yt-player-element';
   private currentStatus: PlaybackStatus = 'unstarted';
   private trackMetadata: TrackMetadata = {
-    title: 'Ghoomte Phirte Radio',
-    artist: 'Your road trip soundtrack',
+    title: '90s Bollywood Evergreen Hits',
+    artist: 'Kumar Sanu, Alka Yagnik, Udit Narayan',
     duration: 0,
     currentTime: 0,
     playlistIndex: 0,
@@ -281,6 +282,7 @@ class YouTubePlayerController {
 
     try {
       this.player = new window.YT.Player(this.containerId, {
+        host: 'https://www.youtube-nocookie.com',
         height: '100%',
         width: '100%',
         playerVars: {
