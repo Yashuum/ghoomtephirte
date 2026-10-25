@@ -12,7 +12,7 @@ import {
   Lock,
 } from 'lucide-react';
 import { PlaybackStatus, TrackMetadata } from '../types';
-import { ytController } from '../audio/youtubePlayer';
+import { radioController } from '../audio/radioPlayer';
 import { AmbientSoundModal } from './AmbientSoundModal';
 
 interface MusicPlayerProps {
@@ -42,23 +42,23 @@ export const MusicPlayer: React.FC<MusicPlayerProps> = ({
   onOpenAdmin,
 }) => {
   const [isAmbientModalOpen, setIsAmbientModalOpen] = useState(false);
-  const [localVolume, setLocalVolume] = useState<number>(ytController.getVolume());
-  const [isMuted, setIsMuted] = useState<boolean>(ytController.isMuted());
+  const [localVolume, setLocalVolume] = useState<number>(radioController.getVolume());
+  const [isMuted, setIsMuted] = useState<boolean>(radioController.isMuted());
   const [isSeeking, setIsSeeking] = useState(false);
   const [seekValue, setSeekValue] = useState<number>(0);
 
   const isPlaying = status === 'playing';
 
   const handleTogglePlay = () => {
-    ytController.togglePlay();
+    radioController.togglePlay();
   };
 
   const handlePrev = () => {
-    ytController.previous();
+    radioController.previous();
   };
 
   const handleNext = () => {
-    ytController.next();
+    radioController.next();
   };
 
   const handleSeekChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -68,21 +68,21 @@ export const MusicPlayer: React.FC<MusicPlayerProps> = ({
 
   const handleSeekCommit = () => {
     setIsSeeking(false);
-    ytController.seekTo(seekValue);
+    radioController.seekTo(seekValue);
   };
 
   const handleVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const val = parseInt(e.target.value, 10);
     setLocalVolume(val);
-    ytController.setVolume(val);
+    radioController.setVolume(val);
     if (val > 0 && isMuted) {
       setIsMuted(false);
     }
   };
 
   const handleToggleMute = () => {
-    ytController.toggleMute();
-    setIsMuted(ytController.isMuted());
+    radioController.toggleMute();
+    setIsMuted(radioController.isMuted());
   };
 
   const currentDisplayTime = isSeeking ? seekValue : metadata.currentTime;
@@ -202,11 +202,24 @@ export const MusicPlayer: React.FC<MusicPlayerProps> = ({
                   color: 'var(--muted-text)',
                   whiteSpace: 'nowrap',
                   flexShrink: 0,
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px',
                 }}
               >
-                <span>{formatTime(currentDisplayTime)}</span>
-                <span style={{ opacity: 0.5 }}> / </span>
-                <span>{metadata.duration > 0 ? formatTime(metadata.duration) : '--:--'}</span>
+                <span
+                  style={{
+                    display: 'inline-block',
+                    width: '6px',
+                    height: '6px',
+                    borderRadius: '50%',
+                    background: isPlaying ? '#4ade80' : '#f59e0b',
+                    boxShadow: isPlaying ? '0 0 8px #4ade80' : 'none',
+                  }}
+                />
+                <span style={{ fontWeight: 600, color: 'var(--cream)', letterSpacing: '0.04em' }}>
+                  {isPlaying ? 'LIVE FM' : 'FM STANDBY'}
+                </span>
               </div>
             </div>
 
@@ -215,30 +228,33 @@ export const MusicPlayer: React.FC<MusicPlayerProps> = ({
               {metadata.artist}
             </div>
 
-            {/* Desktop Seek Bar */}
+            {/* Desktop Seek Bar / Radio Tuning Line */}
             <div className="desktop-seekbar-container" style={{ position: 'relative', width: '100%', height: '14px', display: 'flex', alignItems: 'center' }}>
-              <input
-                type="range"
-                min={0}
-                max={metadata.duration || 100}
-                step={1}
-                value={currentDisplayTime}
-                onChange={handleSeekChange}
-                onMouseUp={handleSeekCommit}
-                onTouchEnd={handleSeekCommit}
-                disabled={metadata.duration <= 0}
-                aria-label="Seek track position"
+              <div
                 style={{
                   width: '100%',
                   height: '4px',
-                  appearance: 'none',
-                  WebkitAppearance: 'none',
-                  background: `linear-gradient(to right, #c85a3a 0%, #c85a3a ${progressPercent}%, rgba(255, 240, 208, 0.2) ${progressPercent}%, rgba(255, 240, 208, 0.2) 100%)`,
                   borderRadius: '2px',
-                  cursor: metadata.duration > 0 ? 'pointer' : 'default',
-                  outline: 'none',
+                  background: 'rgba(255, 240, 208, 0.15)',
+                  position: 'relative',
+                  overflow: 'hidden',
                 }}
-              />
+              >
+                <div
+                  style={{
+                    position: 'absolute',
+                    top: 0,
+                    bottom: 0,
+                    left: `${((metadata.playlistIndex + 1) / (metadata.totalTracks || 4)) * 100}%`,
+                    width: '10px',
+                    background: 'var(--terracotta-bright, #c85a3a)',
+                    borderRadius: '2px',
+                    boxShadow: '0 0 8px #c85a3a',
+                    transform: 'translateX(-50%)',
+                    transition: 'left 0.4s cubic-bezier(0.2, 0.8, 0.25, 1)',
+                  }}
+                />
+              </div>
             </div>
           </div>
 

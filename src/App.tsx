@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { SceneMode, PlaybackStatus, TrackMetadata } from './types';
-import { ytController } from './audio/youtubePlayer';
+import { radioController } from './audio/radioPlayer';
 import { ambientAudio } from './audio/ambientAudio';
 import { SceneBackground } from './components/SceneBackground';
 import { HindiHeadline } from './components/HindiHeadline';
@@ -35,24 +35,24 @@ export function App() {
 
   // Playback state
   const [playbackStatus, setPlaybackStatus] = useState<PlaybackStatus>('unstarted');
-  const [trackMetadata, setTrackMetadata] = useState<TrackMetadata>(ytController.getMetadata());
+  const [trackMetadata, setTrackMetadata] = useState<TrackMetadata>(radioController.getMetadata());
 
   // Mouse position for subtle parallax
   const [mousePos, setMousePos] = useState<{ x: number; y: number }>({ x: 0.5, y: 0.5 });
 
-  // Initialize YouTube Controller
+  // Initialize Native Radio Controller
   useEffect(() => {
-    ytController.init('yt-player-element');
+    radioController.init();
 
-    const unsubscribeStatus = ytController.onStateChange((status) => {
+    const unsubscribeStatus = radioController.onStateChange((status) => {
       setPlaybackStatus(status);
     });
 
-    const unsubscribeTrack = ytController.onTrackChange((meta) => {
+    const unsubscribeTrack = radioController.onTrackChange((meta) => {
       setTrackMetadata(meta);
     });
 
-    const unsubscribeError = ytController.onError((err) => {
+    const unsubscribeError = radioController.onError((err) => {
       setErrorMessage(err);
       setTimeout(() => setErrorMessage(null), 7000);
     });
@@ -61,7 +61,7 @@ export function App() {
       unsubscribeStatus();
       unsubscribeTrack();
       unsubscribeError();
-      ytController.destroy();
+      radioController.destroy();
     };
   }, []);
 
@@ -159,7 +159,7 @@ export function App() {
   // Start the journey CTA
   const handleStartJourney = useCallback(() => {
     setIsJourneyCardVisible(false);
-    ytController.play();
+    radioController.play();
   }, []);
 
   const isPlaying = playbackStatus === 'playing';

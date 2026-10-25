@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
-import { X, ExternalLink, ListMusic, Play, Pause, Radio } from 'lucide-react';
+import { X, Play, Pause, Radio, Check, ListMusic } from 'lucide-react';
 import { PlaybackStatus, TrackMetadata } from '../types';
-import { PLAYLIST_ID, PLAYLIST_URL, ytController } from '../audio/youtubePlayer';
+import { radioController, STATIONS } from '../audio/radioPlayer';
 
 interface QueueDrawerProps {
   isOpen: boolean;
@@ -164,55 +164,82 @@ export const QueueDrawer: React.FC<QueueDrawerProps> = ({
           <div style={{ display: 'flex', gap: '8px' }}>
             <button
               type="button"
-              onClick={() => ytController.togglePlay()}
+              onClick={() => radioController.togglePlay()}
               className="glass-pill"
               style={{ padding: '6px 14px', fontSize: '0.8rem' }}
             >
               {status === 'playing' ? <Pause size={14} /> : <Play size={14} />}
-              <span>{status === 'playing' ? 'Pause' : 'Play'}</span>
+              <span>{status === 'playing' ? 'Pause Radio' : 'Play Radio'}</span>
             </button>
-            <a
-              href={PLAYLIST_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="glass-pill"
-              style={{ padding: '6px 14px', fontSize: '0.8rem' }}
-            >
-              <ExternalLink size={14} />
-              <span>Open on YouTube</span>
-            </a>
           </div>
         </div>
 
-        {/* Embedded YouTube Playlist Container */}
+        {/* Live FM Radio Stations List */}
         <div style={{ flex: '1 1 auto', display: 'flex', flexDirection: 'column' }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
-            <span style={{ fontSize: '0.82rem', fontWeight: 600, color: 'var(--cream)' }}>
-              Playlist Player & Queue
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
+            <span style={{ fontSize: '0.82rem', fontWeight: 600, color: 'var(--cream)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+              Select FM Station
             </span>
             <span style={{ fontSize: '0.72rem', color: 'var(--subtle-text)' }}>
-              ID: {PLAYLIST_ID.substring(0, 12)}...
+              4 Stations Available
             </span>
           </div>
 
-          {/* YouTube Player Iframe Element Container */}
-          <div
-            style={{
-              width: '100%',
-              height: '240px',
-              borderRadius: 'var(--radius-md)',
-              overflow: 'hidden',
-              background: '#000',
-              border: '1px solid var(--glass-border)',
-              position: 'relative',
-              boxShadow: '0 8px 24px rgba(0, 0, 0, 0.5)',
-            }}
-          >
-            <div id="yt-player-element" style={{ width: '100%', height: '100%' }} />
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+            {STATIONS.map((station, idx) => {
+              const isSelected = metadata.playlistIndex === idx;
+              return (
+                <div
+                  key={station.id}
+                  onClick={() => radioController.selectStation(station.id)}
+                  style={{
+                    padding: '12px 14px',
+                    borderRadius: 'var(--radius-md)',
+                    background: isSelected ? 'rgba(200, 90, 58, 0.28)' : 'rgba(35, 17, 13, 0.55)',
+                    border: `1px solid ${isSelected ? 'rgba(200, 90, 58, 0.6)' : 'var(--glass-border)'}`,
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    transition: 'all 0.2s ease',
+                  }}
+                >
+                  <div style={{ minWidth: 0 }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '2px' }}>
+                      <span
+                        style={{
+                          fontFamily: 'var(--font-mono)',
+                          fontSize: '0.75rem',
+                          fontWeight: 700,
+                          color: isSelected ? 'var(--terracotta-bright)' : 'var(--cream)',
+                          background: 'rgba(0, 0, 0, 0.3)',
+                          padding: '1px 6px',
+                          borderRadius: '4px',
+                        }}
+                      >
+                        {station.frequency}
+                      </span>
+                      <span style={{ fontSize: '0.88rem', fontWeight: 600, color: 'var(--cream)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                        {station.title}
+                      </span>
+                    </div>
+                    <p style={{ fontSize: '0.74rem', color: 'var(--muted-text)', margin: 0, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                      {station.subtitle}
+                    </p>
+                  </div>
+
+                  {isSelected && (
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '4px', color: '#4ade80', flexShrink: 0, marginLeft: '8px' }}>
+                      <Check size={16} />
+                    </div>
+                  )}
+                </div>
+              );
+            })}
           </div>
 
-          <p style={{ fontSize: '0.75rem', color: 'var(--muted-text)', marginTop: '12px', lineHeight: 1.5 }}>
-            The official YouTube playlist API synchronizes directly with the car radio player. You can browse tracks, skip forward/backward, and pause seamlessly.
+          <p style={{ fontSize: '0.75rem', color: 'var(--muted-text)', marginTop: '16px', lineHeight: 1.5 }}>
+            Native 24/7 high-fidelity Indian retro radio stations. Zero commercial ads, zero lag, and instant background playback when your phone screen is locked.
           </p>
         </div>
       </div>
