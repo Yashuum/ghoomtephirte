@@ -197,37 +197,46 @@ export const LoadingScreen: React.FC<LoadingScreenProps> = ({ onComplete }) => {
           transition: 'transform 0.12s cubic-bezier(0.2, 0.8, 0.25, 1)',
         }}
       >
-        {/* Layer 1: 3D Hindi & English Cinema Headline */}
-        <div style={{ transform: 'translateZ(45px)', transformStyle: 'preserve-3d' }}>
+        {/* Layer 1: Exact Hindi Cinema Typography “घूमते फिरते” matching homepage */}
+        <div style={{ transform: 'translateZ(45px)', transformStyle: 'preserve-3d', marginBottom: '14px' }}>
           <h1
+            className="loading-hindi-headline"
             style={{
-              fontFamily: "'Playfair Display', Georgia, serif",
-              fontSize: 'clamp(2.5rem, 6.5vw, 4rem)',
-              fontWeight: 700,
-              color: '#fff3db',
-              letterSpacing: '0.02em',
+              fontFamily: "'Rozha One', 'Yatra One', serif",
+              fontSize: 'clamp(4.2rem, 10.5vw, 7.8rem)',
+              fontWeight: 400,
+              color: '#fff5dc',
+              letterSpacing: '0.04em',
               lineHeight: 1.15,
-              margin: '0 0 4px 0',
-              textShadow:
-                '0 4px 10px rgba(0, 0, 0, 0.9), 0 0 35px rgba(255, 190, 118, 0.45)',
+              margin: '0',
+              whiteSpace: 'nowrap',
+              textShadow: `
+                0 3px 0 #deb074,
+                0 6px 0 #b37e42,
+                0 8px 0 #7d4d20,
+                0 11px 0 #4e290e,
+                0 14px 26px rgba(0, 0, 0, 0.85),
+                0 0 45px rgba(255, 230, 160, 0.55)
+              `,
+              filter: 'drop-shadow(0 8px 20px rgba(0, 0, 0, 0.65))',
             }}
           >
-            Ghoomte Phirte
+            “घूमते फिरते”
           </h1>
 
           <p
             style={{
               fontFamily: 'var(--font-main)',
-              fontSize: 'clamp(0.85rem, 2.4vw, 1.05rem)',
+              fontSize: 'clamp(0.8rem, 2.2vw, 0.98rem)',
               fontWeight: 500,
               color: 'var(--terracotta-bright)',
-              letterSpacing: '0.2em',
+              letterSpacing: '0.22em',
               textTransform: 'uppercase',
-              margin: '0 0 20px 0',
+              margin: '4px 0 0 0',
               textShadow: '0 2px 8px rgba(0, 0, 0, 0.8)',
             }}
           >
-            घूमते फिरते &bull; Vintage Indian Road Trip
+            A Nostalgic Indian Road Trip &bull; 24/7 Car Radio
           </p>
         </div>
 
@@ -541,14 +550,23 @@ export const LoadingScreen: React.FC<LoadingScreenProps> = ({ onComplete }) => {
           50% { transform: scale(1.15); }
         }
 
-        @media (max-width: 600px) {
+        @media (max-width: 1024px) {
+          .loading-hindi-headline {
+            font-size: clamp(3.6rem, 11vw, 5.8rem) !important;
+          }
+        }
+        @media (max-width: 680px) {
+          .loading-hindi-headline {
+            font-size: clamp(3.8rem, 16.5vw, 5.6rem) !important;
+            letter-spacing: 0.02em !important;
+          }
           .vintage-3d-gauge {
-            width: 170px !important;
-            height: 170px !important;
-            margin-bottom: 16px !important;
+            width: 155px !important;
+            height: 155px !important;
+            margin-bottom: 14px !important;
           }
           .interactive-3d-stage {
-            padding: 8px 0 !important;
+            padding: 4px 0 !important;
           }
         }
       `}</style>
