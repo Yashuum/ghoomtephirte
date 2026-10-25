@@ -181,7 +181,7 @@ export const QueueDrawer: React.FC<QueueDrawerProps> = ({
               Select FM Station
             </span>
             <span style={{ fontSize: '0.72rem', color: 'var(--subtle-text)' }}>
-              4 Stations Available
+              {STATIONS.length} Stations Available
             </span>
           </div>
 
