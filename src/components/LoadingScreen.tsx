@@ -268,7 +268,7 @@ export const LoadingScreen: React.FC<LoadingScreenProps> = ({ onComplete }) => {
           />
 
           {/* Radio Frequency Numbers around Dial */}
-          <span className="gauge-label top">98.3 FM</span>
+          <span className="gauge-label top">91.1 FM</span>
           <span className="gauge-label right">104.0</span>
           <span className="gauge-label bottom">107.2 FM</span>
           <span className="gauge-label left">92.7</span>

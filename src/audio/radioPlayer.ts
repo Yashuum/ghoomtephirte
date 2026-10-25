@@ -12,6 +12,15 @@ export interface RadioStation {
 
 export const STATIONS: RadioStation[] = [
   {
+    id: '2000s-bollywood-romance',
+    frequency: '91.1 FM',
+    title: '2000s Bollywood Road Trip',
+    subtitle: 'KK, Sonu Nigam, Shreya Ghoshal & Mohit Chauhan',
+    streamUrl: 'https://stream.zeno.fm/wn6muavgfr2tv',
+    fallbackUrl: 'https://stream.zeno.fm/pxc55r5uyc9uv',
+    era: '2000 - 2012',
+  },
+  {
     id: '90s-bollywood-superhits',
     frequency: '92.7 FM',
     title: '90s Bollywood Evergreen Hits',
@@ -46,15 +55,6 @@ export const STATIONS: RadioStation[] = [
     streamUrl: 'https://stream.zeno.fm/f42283921k8uv',
     fallbackUrl: 'https://stream.zeno.fm/f3wvbbqmdg8uv',
     era: 'Evergreen Radio',
-  },
-  {
-    id: '2000s-bollywood-romance',
-    frequency: '91.1 FM',
-    title: '2000s Bollywood Road Trip',
-    subtitle: 'KK, Sonu Nigam, Shreya Ghoshal & Mohit Chauhan',
-    streamUrl: 'https://stream.zeno.fm/wn6muavgfr2tv',
-    fallbackUrl: 'https://stream.zeno.fm/pxc55r5uyc9uv',
-    era: '2000 - 2012',
   },
   {
     id: 'retro-monsoon-drive',
