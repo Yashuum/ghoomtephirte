@@ -129,6 +129,11 @@ class RadioPlayerController {
   private trackListeners: Set<TrackListener> = new Set();
   private errorListeners: Set<ErrorListener> = new Set();
 
+  // Sleep Timer state
+  private sleepTimerSeconds: number | null = null;
+  private sleepTimerInterval: number | null = null;
+  private sleepTimerListeners: Set<(seconds: number | null) => void> = new Set();
+
   private trackMetadata: TrackMetadata = {
     title: STATIONS[0].title,
     artist: `${STATIONS[0].frequency} • ${STATIONS[0].subtitle}`,
@@ -411,7 +416,71 @@ class RadioPlayerController {
     this.errorListeners.forEach((fn) => fn(msg));
   }
 
+  public setSleepTimer(minutes: number | null): void {
+    if (this.sleepTimerInterval) {
+      clearInterval(this.sleepTimerInterval);
+      this.sleepTimerInterval = null;
+    }
+
+    if (!minutes || minutes <= 0) {
+      this.sleepTimerSeconds = null;
+      this.notifySleepTimerListeners();
+      return;
+    }
+
+    this.sleepTimerSeconds = Math.round(minutes * 60);
+    this.notifySleepTimerListeners();
+
+    this.sleepTimerInterval = window.setInterval(() => {
+      if (this.sleepTimerSeconds === null) {
+        if (this.sleepTimerInterval) clearInterval(this.sleepTimerInterval);
+        return;
+      }
+
+      this.sleepTimerSeconds--;
+
+      // Smooth fade-out in final 6 seconds
+      if (this.sleepTimerSeconds <= 6 && this.sleepTimerSeconds > 0 && this.audio) {
+        const targetVol = (this.volume / 100) * (this.sleepTimerSeconds / 6);
+        this.audio.volume = Math.max(0, targetVol);
+      }
+
+      if (this.sleepTimerSeconds <= 0) {
+        if (this.sleepTimerInterval) {
+          clearInterval(this.sleepTimerInterval);
+          this.sleepTimerInterval = null;
+        }
+        this.sleepTimerSeconds = null;
+        this.pause();
+        // Restore volume for next session
+        if (this.audio) {
+          this.audio.volume = this.volume / 100;
+        }
+        this.notifySleepTimerListeners();
+        return;
+      }
+
+      this.notifySleepTimerListeners();
+    }, 1000);
+  }
+
+  public getSleepTimerRemaining(): number | null {
+    return this.sleepTimerSeconds;
+  }
+
+  public onSleepTimerChange(listener: (seconds: number | null) => void): () => void {
+    this.sleepTimerListeners.add(listener);
+    listener(this.sleepTimerSeconds);
+    return () => this.sleepTimerListeners.delete(listener);
+  }
+
+  private notifySleepTimerListeners(): void {
+    this.sleepTimerListeners.forEach((fn) => fn(this.sleepTimerSeconds));
+  }
+
   public destroy(): void {
+    if (this.sleepTimerInterval) clearInterval(this.sleepTimerInterval);
+    this.sleepTimerListeners.clear();
     if (this.reconnectTimer) clearTimeout(this.reconnectTimer);
     if (this.audio) {
       this.audio.pause();

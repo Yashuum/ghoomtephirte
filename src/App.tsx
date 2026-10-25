@@ -9,7 +9,8 @@ import { TopNavigation } from './components/TopNavigation';
 import { AtmosphereController } from './components/AtmosphereController';
 import { JourneyCard } from './components/JourneyCard';
 import { MusicPlayer } from './components/MusicPlayer';
-import { InstallDrawer } from './components/InstallDrawer';
+import { StationsModal } from './components/StationsModal';
+import { SleepTimerModal } from './components/SleepTimerModal';
 import { LoadingScreen } from './components/LoadingScreen';
 import { AdminModal } from './components/AdminModal';
 import { WifiOff, AlertCircle } from 'lucide-react';
@@ -23,8 +24,12 @@ export function App() {
   // Journey card visibility
   const [isJourneyCardVisible, setIsJourneyCardVisible] = useState<boolean>(true);
 
-  // Install Drawer
-  const [isInstallOpen, setIsInstallOpen] = useState<boolean>(false);
+  // Stations & Sleep Timer Modals
+  const [isStationsOpen, setIsStationsOpen] = useState<boolean>(false);
+  const [isSleepTimerOpen, setIsSleepTimerOpen] = useState<boolean>(false);
+  const [sleepTimerRemaining, setSleepTimerRemaining] = useState<number | null>(
+    radioController.getSleepTimerRemaining()
+  );
 
   // Secret Admin Control Room
   const [isAdminOpen, setIsAdminOpen] = useState<boolean>(false);
@@ -52,6 +57,10 @@ export function App() {
       setTrackMetadata(meta);
     });
 
+    const unsubscribeSleep = radioController.onSleepTimerChange((sec) => {
+      setSleepTimerRemaining(sec);
+    });
+
     const unsubscribeError = radioController.onError((err) => {
       setErrorMessage(err);
       setTimeout(() => setErrorMessage(null), 7000);
@@ -60,6 +69,7 @@ export function App() {
     return () => {
       unsubscribeStatus();
       unsubscribeTrack();
+      unsubscribeSleep();
       unsubscribeError();
       radioController.destroy();
     };
@@ -186,10 +196,11 @@ export function App() {
       {/* 3. Desktop Cursor Glow & Follower */}
       <CursorEffects lighting={scene === 'night' ? 'night' : 'day'} />
 
-      {/* 4. Floating Top Navigation Bar (YouTube, Install) */}
+      {/* 4. Floating Top Navigation Bar (Stations, Sleep Timer, Live Clock) */}
       <TopNavigation
-        onOpenInstall={() => setIsInstallOpen(true)}
-        isInstallOpen={isInstallOpen}
+        onOpenStations={() => setIsStationsOpen(true)}
+        onOpenSleepTimer={() => setIsSleepTimerOpen(true)}
+        sleepTimerRemaining={sleepTimerRemaining}
       />
 
       {/* 5. Atmosphere Controller: ☀ Day | ☾ Night | ☔ Rain */}
@@ -272,12 +283,23 @@ export function App() {
         onToggleRadioHiss={handleToggleRadioHiss}
         onToggleRainSound={handleToggleRainSound}
         onOpenAdmin={() => setIsAdminOpen(true)}
+        onOpenStations={() => setIsStationsOpen(true)}
+        onOpenSleepTimer={() => setIsSleepTimerOpen(true)}
+        sleepTimerRemaining={sleepTimerRemaining}
       />
 
-      {/* 9. Install PWA Drawer */}
-      <InstallDrawer
-        isOpen={isInstallOpen}
-        onClose={() => setIsInstallOpen(false)}
+      {/* 9. Stations Selector Modal (11 Curated Nostalgic Hindi Stations) */}
+      <StationsModal
+        isOpen={isStationsOpen}
+        onClose={() => setIsStationsOpen(false)}
+        status={playbackStatus}
+        currentStationId={radioController.getCurrentStation()?.id}
+      />
+
+      {/* 10. Sleep Timer Modal */}
+      <SleepTimerModal
+        isOpen={isSleepTimerOpen}
+        onClose={() => setIsSleepTimerOpen(false)}
       />
 
       {/* 10. Secret Admin Playlist Control Modal */}

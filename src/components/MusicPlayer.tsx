@@ -10,6 +10,8 @@ import {
   Mail,
   Disc,
   Lock,
+  Radio,
+  Moon,
 } from 'lucide-react';
 import { PlaybackStatus, TrackMetadata } from '../types';
 import { radioController } from '../audio/radioPlayer';
@@ -23,6 +25,9 @@ interface MusicPlayerProps {
   onToggleRadioHiss: () => void;
   onToggleRainSound: () => void;
   onOpenAdmin?: () => void;
+  onOpenStations?: () => void;
+  onOpenSleepTimer?: () => void;
+  sleepTimerRemaining?: number | null;
 }
 
 const formatTime = (sec: number): string => {
@@ -40,6 +45,9 @@ export const MusicPlayer: React.FC<MusicPlayerProps> = ({
   onToggleRadioHiss,
   onToggleRainSound,
   onOpenAdmin,
+  onOpenStations,
+  onOpenSleepTimer,
+  sleepTimerRemaining,
 }) => {
   const [isAmbientModalOpen, setIsAmbientModalOpen] = useState(false);
   const [localVolume, setLocalVolume] = useState<number>(radioController.getVolume());
@@ -423,6 +431,46 @@ export const MusicPlayer: React.FC<MusicPlayerProps> = ({
               }}
             />
           </div>
+
+          {/* Stations Button */}
+          {onOpenStations && (
+            <button
+              type="button"
+              onClick={onOpenStations}
+              aria-label="Open 11 Hindi radio stations"
+              title="Browse all 11 stations"
+              className="glass-pill"
+              style={{
+                padding: '6px 12px',
+                fontSize: '0.78rem',
+                gap: '6px',
+              }}
+            >
+              <Radio size={13} color="var(--terracotta-bright)" />
+              <span className="hide-on-compact">Stations</span>
+            </button>
+          )}
+
+          {/* Sleep Timer Button */}
+          {onOpenSleepTimer && (
+            <button
+              type="button"
+              onClick={onOpenSleepTimer}
+              aria-label="Set sleep timer"
+              title="Set radio sleep timer"
+              className={`glass-pill ${sleepTimerRemaining ? 'active' : ''}`}
+              style={{
+                padding: '6px 12px',
+                fontSize: '0.78rem',
+                gap: '6px',
+              }}
+            >
+              <Moon size={13} />
+              <span className="hide-on-compact">
+                {sleepTimerRemaining ? `${Math.ceil(sleepTimerRemaining / 60)}m` : 'Sleep'}
+              </span>
+            </button>
+          )}
 
           {/* Ambient Atmosphere Button on Desktop */}
           <button

@@ -1,15 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { ExternalLink, Download, Radio } from 'lucide-react';
-import { playlistManager } from '../services/playlistManager';
+import { Radio, Moon } from 'lucide-react';
 
 interface TopNavigationProps {
-  onOpenInstall: () => void;
-  isInstallOpen: boolean;
+  onOpenStations: () => void;
+  onOpenSleepTimer: () => void;
+  sleepTimerRemaining: number | null;
 }
 
 export const TopNavigation: React.FC<TopNavigationProps> = ({
-  onOpenInstall,
-  isInstallOpen,
+  onOpenStations,
+  onOpenSleepTimer,
+  sleepTimerRemaining,
 }) => {
   // 1. Live Clock
   const [timeStr, setTimeStr] = useState<string>('');
@@ -44,17 +45,11 @@ export const TopNavigation: React.FC<TopNavigationProps> = ({
     return () => clearInterval(interval);
   }, []);
 
-  // 3. Active YouTube Playlist URL tracking
-  const [activeUrl, setActiveUrl] = useState<string>(
-    `https://www.youtube.com/playlist?list=${playlistManager.getActivePlaylist().playlistId}`
-  );
-
-  useEffect(() => {
-    const unsub = playlistManager.subscribe((active) => {
-      setActiveUrl(`https://www.youtube.com/playlist?list=${active.playlistId}`);
-    });
-    return unsub;
-  }, []);
+  const formatSleepMinutes = (sec: number | null): string => {
+    if (!sec || sec <= 0) return '';
+    const m = Math.ceil(sec / 60);
+    return `${m}m`;
+  };
 
   return (
     <header
@@ -101,16 +96,32 @@ export const TopNavigation: React.FC<TopNavigationProps> = ({
         </span>
       </div>
 
-      {/* Center: Journey Status Pill */}
-      <div
+      {/* Center: Interactive Stations Dial Button */}
+      <button
+        type="button"
+        onClick={onOpenStations}
         className="glass-panel status-pill hide-on-mobile-xs"
+        title="Open all 11 Hindi radio stations"
+        aria-label="Open Radio Stations"
         style={{
           pointerEvents: 'auto',
           display: 'flex',
           alignItems: 'center',
           gap: '8px',
-          padding: '7px 16px',
+          padding: '7px 18px',
           borderRadius: 'var(--radius-full)',
+          border: '1px solid var(--glass-border)',
+          cursor: 'pointer',
+          background: 'rgba(45, 20, 15, 0.65)',
+          transition: 'all 0.2s ease',
+        }}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.background = 'rgba(200, 90, 58, 0.25)';
+          e.currentTarget.style.borderColor = 'rgba(200, 90, 58, 0.6)';
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.background = 'rgba(45, 20, 15, 0.65)';
+          e.currentTarget.style.borderColor = 'var(--glass-border)';
         }}
       >
         <span
@@ -127,19 +138,19 @@ export const TopNavigation: React.FC<TopNavigationProps> = ({
         <span
           style={{
             fontSize: '0.82rem',
-            fontWeight: 600,
+            fontWeight: 700,
             letterSpacing: '0.02em',
             color: 'var(--cream)',
             whiteSpace: 'nowrap',
           }}
         >
-          On the road
+          📻 Stations (11) ▾
         </span>
         <span
           style={{
             fontSize: '0.74rem',
             color: 'var(--subtle-text)',
-            paddingLeft: '4px',
+            paddingLeft: '6px',
             borderLeft: '1px solid rgba(255, 240, 208, 0.2)',
             whiteSpace: 'nowrap',
           }}
@@ -147,9 +158,9 @@ export const TopNavigation: React.FC<TopNavigationProps> = ({
         >
           {listenerCount} travelling with you
         </span>
-      </div>
+      </button>
 
-      {/* Right: Glass Navigation Pills (YouTube, Install) */}
+      {/* Right: Glass Navigation Buttons (Stations & Sleep Timer) */}
       <nav
         aria-label="Main Navigation"
         style={{
@@ -159,31 +170,32 @@ export const TopNavigation: React.FC<TopNavigationProps> = ({
           gap: '8px',
         }}
       >
-        {/* YouTube Playlist Link */}
-        <a
-          href={activeUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="glass-pill"
-          title="Open official playlist on YouTube"
-          aria-label="Open YouTube playlist"
-          style={{ padding: '7px 14px' }}
-        >
-          <ExternalLink size={14} />
-          <span className="hide-on-mobile">YouTube</span>
-        </a>
-
-        {/* Install App Button */}
+        {/* Stations Button */}
         <button
           type="button"
-          onClick={onOpenInstall}
-          className={`glass-pill ${isInstallOpen ? 'active' : ''}`}
-          title="Install as Progressive Web App"
-          aria-label="Install app"
+          onClick={onOpenStations}
+          className="glass-pill"
+          title="Browse all 11 nostalgic radio stations"
+          aria-label="Radio Stations"
           style={{ padding: '7px 14px' }}
         >
-          <Download size={14} />
-          <span className="hide-on-mobile">Install</span>
+          <Radio size={14} />
+          <span>Stations</span>
+        </button>
+
+        {/* Sleep Timer Button */}
+        <button
+          type="button"
+          onClick={onOpenSleepTimer}
+          className={`glass-pill ${sleepTimerRemaining ? 'active' : ''}`}
+          title="Set sleep timer"
+          aria-label="Sleep timer"
+          style={{ padding: '7px 14px' }}
+        >
+          <Moon size={14} />
+          <span className="hide-on-mobile">
+            {sleepTimerRemaining ? `Sleep (${formatSleepMinutes(sleepTimerRemaining)})` : 'Sleep'}
+          </span>
         </button>
       </nav>
 
