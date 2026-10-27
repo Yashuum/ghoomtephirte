@@ -2,7 +2,7 @@
 
 A responsive, cinematic single-page web application capturing the nostalgic feeling of driving through a bustling vintage Indian street from inside an old car, listening to classic Hindi songs with ambient environmental sounds and dynamic weather.
 
-![Ghoomte Phirte Hero Preview](/images/ghoomte-phirte-hero.jpg)
+[![Ghoomte Phirte Hero Preview](/images/ghoomte-phirte-hero.jpg)](https://yashuum.github.io/ghoomtephirte/)
 
 ---
 
